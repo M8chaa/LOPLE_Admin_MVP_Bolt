@@ -19,7 +19,6 @@ import {
   LinearProgress
 } from '@mui/material';
 import {
-  Dashboard as DashboardIcon,
   LocalShipping as TruckIcon,
   Assignment as CallcardIcon,
   PersonAdd as AddDriverIcon,
@@ -28,7 +27,6 @@ import {
   CheckCircle as CheckIcon,
   Schedule as ScheduleIcon,
   TrendingUp as TrendingIcon,
-  Notifications as NotificationIcon,
   Phone as PhoneIcon,
   Assignment as AssignIcon,
   Emergency as EmergencyIcon
@@ -43,7 +41,7 @@ interface CallcardData {
   status: string;
   pickupLocation: string;
   dropoffLocation: string;
-  driver?: { name: string };
+  Driver?: { name: string };
   createdAt: string;
 }
 
@@ -84,8 +82,8 @@ export default function DashboardPage() {
   // Calculate metrics
   const pendingCallcards = callcards.filter(c => c.status === 'pending').length;
   const inProgressCallcards = callcards.filter(c => c.status === 'in_progress').length;
-  const availableDrivers = drivers.filter(d => d.status === '대기중').length;
-  const busyDrivers = drivers.filter(d => d.status === '운송중').length;
+  const availableDrivers = drivers.filter(d => d.status === 'available').length;
+  const busyDrivers = drivers.filter(d => d.status === 'on_delivery').length;
   const onTimeRate = callcards.length > 0 ? Math.round((inProgressCallcards / callcards.length) * 100) : 0;
 
   // Recent activity (last 5 callcards)
@@ -116,7 +114,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <Box sx={{ width: '100%', p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <LinearProgress />
         <Typography sx={{ mt: 2 }}>대시보드 로딩 중...</Typography>
       </Box>
@@ -125,27 +123,14 @@ export default function DashboardPage() {
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Header */}
-      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <DashboardIcon sx={{ mr: 1, fontSize: 32, color: 'primary.main' }} />
-          <Typography variant="h4" fontWeight="bold">
-            LOPLE 관제 대시보드
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IconButton>
-            <Badge badgeContent={alerts.length} color="error">
-              <NotificationIcon />
-            </Badge>
-          </IconButton>
-          <Chip 
-            label={`실시간 업데이트 - ${new Date().toLocaleTimeString('ko-KR')}`} 
-            size="small" 
-            color="success" 
-            variant="outlined" 
-          />
-        </Box>
+      {/* Page Header */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" fontWeight="bold" gutterBottom>
+          관제 대시보드
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary">
+          실시간 운송 현황 및 관리
+        </Typography>
       </Box>
 
       {/* Alerts Section */}
@@ -325,8 +310,8 @@ export default function DashboardPage() {
                                 size="small" 
                                 color={card.status === 'pending' ? 'warning' : card.status === 'in_progress' ? 'success' : 'primary'}
                               />
-                              {card.driver && (
-                                <Chip label={card.driver.name} size="small" variant="outlined" />
+                              {card.Driver && (
+                                <Chip label={card.Driver.name} size="small" variant="outlined" />
                               )}
                             </Box>
                           </Box>
@@ -362,16 +347,16 @@ export default function DashboardPage() {
                   <React.Fragment key={driver.id}>
                     <ListItem>
                       <ListItemIcon>
-                        <TruckIcon color={driver.status === '대기중' ? 'success' : 'warning'} />
+                        <TruckIcon color={driver.status === 'available' ? 'success' : 'warning'} />
                       </ListItemIcon>
                       <ListItemText
                         primary={driver.name}
                         secondary={
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Chip 
-                              label={driver.status} 
+                              label={driver.status === 'available' ? '대기중' : driver.status === 'on_delivery' ? '운송중' : '오프라인'} 
                               size="small" 
-                              color={driver.status === '대기중' ? 'success' : 'warning'}
+                              color={driver.status === 'available' ? 'success' : driver.status === 'on_delivery' ? 'warning' : 'default'}
                             />
                             <Typography variant="body2" color="text.secondary">
                               {driver.phone}
