@@ -38,3 +38,7 @@
 
 ### Next Up
 - MVP ready for tomorrow's briefing. Further polishing can be done post-demo.
+
+### MVP Scope Note (from PRD)
+- Included: Auth login, basic dashboard KPIs, callcard CRUD + driver assignment, driver list & status.
+- Excluded for MVP: Cancel/Accident/Return workflows, price engine, analytics, maps, batch operations, multi-role UI, notifications, electronic docs.
