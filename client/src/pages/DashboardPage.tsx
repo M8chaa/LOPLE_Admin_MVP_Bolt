@@ -29,7 +29,7 @@ import {
   TrendingUp as TrendingIcon,
   Phone as PhoneIcon,
   Assignment as AssignIcon,
-  Emergency as EmergencyIcon
+  LocalHospital as EmergencyIcon
 } from '@mui/icons-material';
 import axios from 'axios';
 import { useAuth } from '../hooks/useAuth';
